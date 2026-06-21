@@ -5,15 +5,18 @@ from app.services.agent_service import agent_service
 
 class ChatService:
     """
-    Handles chat business logic.
+    Handles all chat operations.
     """
 
-    def chat(
+    def send_message(
         self,
         db: Session,
         conversation_id: int,
         message: str,
     ) -> str:
+        """
+        Send a message to the AI agent.
+        """
 
         return agent_service.chat(
             db=db,

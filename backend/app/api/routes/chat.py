@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter
 
-from app.database.session import get_db
-from app.memory.memory_service import memory_service
 from app.schemas.chat import ChatRequest, ChatResponse
-from app.services.agent_service import agent_service
+from app.services.chat_service import chat_service
+from app.database.session import SessionLocal
 
 router = APIRouter(
     prefix="/chat",
@@ -12,35 +10,26 @@ router = APIRouter(
 )
 
 
-@router.post("", response_model=ChatResponse)
-async def chat(
-    request: ChatRequest,
-    db: Session = Depends(get_db),
-):
-    # Save user message
-    memory_service.save_message(
-        db=db,
-        conversation_id=request.conversation_id,
-        role="user",
-        content=request.message,
-    )
+@router.post(
+    "",
+    response_model=ChatResponse,
+)
+async def chat(request: ChatRequest):
 
-    # Generate AI response
-    answer = agent_service.chat(
-        db=db,
-        conversation_id=request.conversation_id,
-        message=request.message,
-    )
+    db = SessionLocal()
 
-    # Save assistant response
-    memory_service.save_message(
-        db=db,
-        conversation_id=request.conversation_id,
-        role="assistant",
-        content=answer,
-    )
+    try:
 
-    return ChatResponse(
-        success=True,
-        response=answer,
-    )
+        answer = chat_service.send_message(
+            db=db,
+            conversation_id=request.conversation_id,
+            message=request.message,
+        )
+
+        return ChatResponse(
+            success=True,
+            response=answer,
+        )
+
+    finally:
+        db.close()

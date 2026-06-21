@@ -7,8 +7,7 @@ from app.agents.planner_agent import planner_agent
 
 class AgentService:
     """
-    Main AI service.
-    Controls all AI agents.
+    Main AI Orchestrator.
     """
 
     def chat(
@@ -18,13 +17,11 @@ class AgentService:
         message: str,
     ) -> str:
 
-        # പഴയ conversation context എടുക്കുക
         context = memory_agent.get_context(
-            db,
-            conversation_id,
+            db=db,
+            conversation_id=conversation_id,
         )
 
-        # AI-യിൽ നിന്ന് reply വാങ്ങുക
         return chat_agent.generate_response(
             user_message=message,
             context=context,
