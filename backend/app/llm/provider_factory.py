@@ -1,4 +1,4 @@
-from app.llm.ollama_provider import ollama_provider
+from app.llm.providers.ollama_provider import ollama_provider
 
 
 class ProviderFactory:
@@ -9,13 +9,16 @@ class ProviderFactory:
 
     def get_provider(self):
         """
-        Return active provider.
+        Return the active provider.
 
-        Future:
+        Future providers:
+        - OpenRouter
         - OpenAI
-        - Claude
         - Gemini
-        - Grok
+        - Claude
+        - Groq
+        - DeepSeek
+        - Mistral
         """
 
         return ollama_provider
