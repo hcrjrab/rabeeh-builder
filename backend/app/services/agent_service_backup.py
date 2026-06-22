@@ -1,13 +1,13 @@
 from sqlalchemy.orm import Session
 
 from app.agents.chat_agent import chat_agent
-from app.agents.planner_agent import planner_agent
 from app.agents.memory_agent import memory_agent
+from app.agents.planner_agent import planner_agent
 
 
 class AgentService:
     """
-    Main AI orchestrator.
+    Main AI Orchestrator.
     """
 
     def chat(
@@ -16,9 +16,6 @@ class AgentService:
         conversation_id: int,
         message: str,
     ) -> str:
-        """
-        Handle chat requests.
-        """
 
         context = memory_agent.get_context(
             db=db,
@@ -34,13 +31,8 @@ class AgentService:
         self,
         task: str,
     ) -> str:
-        """
-        Generate a plan.
-        """
 
-        return planner_agent.generate_response(
-            user_message=task,
-        )
+        return planner_agent.generate_response(task)
 
 
 agent_service = AgentService()

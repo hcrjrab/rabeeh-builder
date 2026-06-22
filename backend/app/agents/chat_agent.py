@@ -1,37 +1,39 @@
-from pathlib import Path
-
 from app.agents.base_agent import BaseAgent
-from app.services.ollama_service import ollama_service
-
-
-SYSTEM_PROMPT = (
-    Path(__file__).resolve().parent.parent
-    / "prompts"
-    / "system_prompt.txt"
-)
+from app.llm.provider_factory import provider_factory
 
 
 class ChatAgent(BaseAgent):
     """
-    Primary chat agent responsible for
-    generating AI responses.
+    Main conversational AI agent.
+    Uses the configured LLM provider.
     """
 
     def __init__(self):
-        super().__init__(str(SYSTEM_PROMPT))
+        self.provider = provider_factory.get_provider()
 
     def generate_response(
         self,
         user_message: str,
         context: str = "",
     ) -> str:
+        """
+        Generate a response using the active LLM provider.
+        """
 
-        prompt = self.build_prompt(
-            user_message=user_message,
-            context=context,
-        )
+        if context:
+            prompt = f"""
+Previous Conversation:
+{context}
 
-        return ollama_service.chat(prompt)
+User:
+{user_message}
+
+Assistant:
+"""
+        else:
+            prompt = user_message
+
+        return self.provider.chat(prompt)
 
 
 chat_agent = ChatAgent()

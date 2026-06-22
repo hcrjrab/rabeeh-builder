@@ -1,18 +1,19 @@
+from pathlib import Path
+
 from app.agents.base_agent import BaseAgent
-from app.llm.provider_factory import provider_factory
+from app.services.ollama_service import ollama_service
+
+PLANNER_PROMPT = (
+    Path(__file__).resolve().parent.parent
+    / "prompts"
+    / "planner_prompt.txt"
+)
 
 
 class PlannerAgent(BaseAgent):
-    """
-    Planning agent for creating structured plans.
-    """
 
     def __init__(self):
-        super().__init__(
-            "backend/app/prompts/planner_prompt.txt"
-        )
-
-        self.provider = provider_factory.get_provider()
+        super().__init__(str(PLANNER_PROMPT))
 
     def generate_response(
         self,
@@ -25,7 +26,7 @@ class PlannerAgent(BaseAgent):
             context=context,
         )
 
-        return self.provider.chat(prompt)
+        return ollama_service.chat(prompt)
 
 
 planner_agent = PlannerAgent()

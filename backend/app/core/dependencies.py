@@ -1,29 +1,18 @@
-from app.core.container import container
+from collections.abc import Generator
+
+from sqlalchemy.orm import Session
+
+from app.database.session import SessionLocal
 
 
-def get_chat_service():
+def get_db() -> Generator[Session, None, None]:
     """
-    Return ChatService instance.
+    Database Dependency
     """
-    return container.chat
 
+    db = SessionLocal()
 
-def get_conversation_service():
-    """
-    Return ConversationService instance.
-    """
-    return container.conversation
-
-
-def get_memory_service():
-    """
-    Return MemoryService instance.
-    """
-    return container.memory
-
-
-def get_tool_service():
-    """
-    Return ToolService instance.
-    """
-    return container.tools
+    try:
+        yield db
+    finally:
+        db.close()

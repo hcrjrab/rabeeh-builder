@@ -1,8 +1,12 @@
 from fastapi import APIRouter
+from fastapi import Depends
 
-from app.schemas.chat import ChatRequest, ChatResponse
+from sqlalchemy.orm import Session
+
+from app.core.dependencies import get_db
+from app.schemas.chat import ChatRequest
+from app.schemas.chat import ChatResponse
 from app.services.chat_service import chat_service
-from app.database.session import SessionLocal
 
 router = APIRouter(
     prefix="/chat",
@@ -14,22 +18,18 @@ router = APIRouter(
     "",
     response_model=ChatResponse,
 )
-async def chat(request: ChatRequest):
+async def chat(
+    request: ChatRequest,
+    db: Session = Depends(get_db),
+):
 
-    db = SessionLocal()
+    answer = chat_service.send_message(
+        db=db,
+        conversation_id=request.conversation_id,
+        message=request.message,
+    )
 
-    try:
-
-        answer = chat_service.send_message(
-            db=db,
-            conversation_id=request.conversation_id,
-            message=request.message,
-        )
-
-        return ChatResponse(
-            success=True,
-            response=answer,
-        )
-
-    finally:
-        db.close()
+    return ChatResponse(
+        success=True,
+        response=answer,
+    )
