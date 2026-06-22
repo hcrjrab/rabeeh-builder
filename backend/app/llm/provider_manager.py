@@ -1,30 +1,32 @@
-from app.llm.provider_registry import provider_registry
+from app.llm.model_selector import model_selector
 
 
 class ProviderManager:
     """
-    Decides which LLM provider should be used.
+    Select provider and model.
     """
-
-    DEFAULT_PROVIDER = "ollama"
 
     def get_provider_name(
         self,
         provider: str = "auto",
+        task: str = "chat",
     ) -> str:
-        """
-        Return provider name.
-        """
 
-        if provider == "auto":
-            return self.DEFAULT_PROVIDER
+        if provider != "auto":
+            return provider
 
-        if not provider_registry.exists(provider):
-            raise ValueError(
-                f"Unknown provider: {provider}"
-            )
+        config = model_selector.select(task)
 
-        return provider
+        return config["provider"]
+
+    def get_model_name(
+        self,
+        task: str = "chat",
+    ) -> str:
+
+        config = model_selector.select(task)
+
+        return config["model"]
 
 
 provider_manager = ProviderManager()
