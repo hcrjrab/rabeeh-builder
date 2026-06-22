@@ -1,0 +1,41 @@
+default_provider: ollama
+
+providers:
+
+  ollama:
+    enabled: true
+    timeout: 120
+
+  openrouter:
+    enabled: false
+    timeout: 120
+
+  openai:
+    enabled: false
+    timeout: 120
+
+  gemini:
+    enabled: false
+    timeout: 120
+
+  claude:
+    enabled: false
+    timeout: 120
+
+models:
+
+  chat:
+    provider: ollama
+    model: llama3.1
+
+  coding:
+    provider: ollama
+    model: qwen2.5-coder
+
+  reasoning:
+    provider: ollama
+    model: deepseek-r1
+
+  vision:
+    provider: ollama
+    model: llava

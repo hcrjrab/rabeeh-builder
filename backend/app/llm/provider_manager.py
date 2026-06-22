@@ -1,32 +1,25 @@
-from app.llm.model_selector import model_selector
+from app.llm.config import llm_config
 
 
 class ProviderManager:
-    """
-    Select provider and model.
-    """
 
     def get_provider_name(
         self,
-        provider: str = "auto",
-        task: str = "chat",
-    ) -> str:
+        provider="auto",
+        task="chat",
+    ):
 
         if provider != "auto":
             return provider
 
-        config = model_selector.select(task)
-
-        return config["provider"]
+        return llm_config.model(task)["provider"]
 
     def get_model_name(
         self,
-        task: str = "chat",
-    ) -> str:
+        task="chat",
+    ):
 
-        config = model_selector.select(task)
-
-        return config["model"]
+        return llm_config.model(task)["model"]
 
 
 provider_manager = ProviderManager()
