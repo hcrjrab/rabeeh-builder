@@ -1,27 +1,17 @@
-from app.llm.providers.ollama_provider import ollama_provider
+from app.llm.provider_registry import provider_registry
 
 
 class ProviderFactory:
     """
-    Factory responsible for returning
-    the configured LLM provider.
+    Returns active provider.
     """
 
-    def get_provider(self):
-        """
-        Return the active provider.
+    def get_provider(
+        self,
+        provider: str = "ollama",
+    ):
 
-        Future providers:
-        - OpenRouter
-        - OpenAI
-        - Gemini
-        - Claude
-        - Groq
-        - DeepSeek
-        - Mistral
-        """
-
-        return ollama_provider
+        return provider_registry.get(provider)
 
 
 provider_factory = ProviderFactory()
